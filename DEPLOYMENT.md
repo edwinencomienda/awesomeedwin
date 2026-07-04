@@ -38,16 +38,21 @@ Two credentials are in play, and one can silently break the other:
    `~/Code/Personal/.envrc` for every project under `~/Code/Personal/`.
    When set, it **overrides** the OAuth login entirely.
 
+The `.envrc` token is currently scoped correctly and `npm run deploy` works
+with it directly. It has:
+
+- Account → **Cloudflare Pages: Edit**
+- Account → **Account Settings: Read**
+- Zone (`awesomeedwin.com`) → **DNS: Edit**, **Zone: Read**
+
 Symptoms and fixes:
 
 - `Failed to automatically retrieve account IDs` from any wrangler command →
   the env token is expired or under-scoped. Either fix the token in
-  `~/Code/Personal/.envrc` (then `direnv allow`), or bypass it for one
-  command: `unset CLOUDFLARE_API_TOKEN; npx wrangler <cmd>`.
-- The API token in `.envrc` should have at least:
-  - Account → **Cloudflare Pages: Edit**
-  - Account → **Account Settings: Read**
-  - Zone (`awesomeedwin.com`) → **DNS: Edit**, **Zone: Read**
+  `~/Code/Personal/.envrc` to match the permissions above (then
+  `direnv allow`), or bypass it for one command:
+  `unset CLOUDFLARE_API_TOKEN; npx wrangler <cmd>` (falls back to OAuth,
+  which can deploy Pages but cannot edit DNS).
 
 Never commit or print token values.
 
